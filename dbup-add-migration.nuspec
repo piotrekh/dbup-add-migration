@@ -3,6 +3,7 @@
   <metadata>
     <id>dbup-add-migration</id>
     <version>1.0.0</version>
+	<title>DbUp Add-Migration command</title>
     <authors>Piotr Hechelski</authors>
     <owners>Piotr Hechelski</owners>
     <licenseUrl>https://github.com/piotrekh/dbup-add-migration/master/LICENSE</licenseUrl>
