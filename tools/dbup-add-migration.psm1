@@ -3,7 +3,8 @@
     param
     (
         [string] $Name,
-        [string] $Folder = ""
+        [string] $Folder = "",
+        [BuildActionType] $BuildAction = [BuildActionType]::None
     )
 
     $migrationsFolderName = "Migrations"
@@ -66,12 +67,33 @@
     New-Item -Path $scriptsDir -Name $fileName -ItemType File | Out-Null
 
     #add the migration file to the project
-    $project.ProjectItems.AddFromFile($filePath) | Out-Null
+    $item = $project.ProjectItems.AddFromFile($filePath)
+    
+    #set the build action
+    if($BuildAction -ne [BuildActionType]::None)
+    {
+        $item.Properties.Item("BuildAction").Value = $BuildAction -as [int]
+
+        #if build action is set to content, then also
+        #set 'copy to output directory' to 'copy always'
+        if($BuildAction -eq [BuildActionType]::Content)
+        {
+            $item.Properties.Item("CopyToOutputDirectory").Value = [uint32]1
+        }
+    }
 
     Write-Host "Created a new migration file - ${fileName}"
 
     #open the migration file
     $dte.ItemOperations.OpenFile($filePath) | Out-Null
+}
+
+enum BuildActionType
+{
+    None = 0
+    Compile = 1
+    Content = 2
+    EmbeddedResource = 3
 }
 
 Export-ModuleMember Add-Migration

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>dbup-add-migration</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 	<title>DbUp Add-Migration command</title>
     <authors>Piotr Hechelski</authors>
     <owners>Piotr Hechelski</owners>
@@ -11,8 +11,11 @@
     <iconUrl>https://raw.github.com/DbUp/DbUp/master/src/Information/dbup-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Package manager console command "Add-Migration" that creates an sql file with date and time (yyyyMMddHHmmss) in the file name (e.g. 20170730185349_Migration.sql)</description>
-    <releaseNotes>Initial release</releaseNotes>
+    <releaseNotes>v1.1.0 - added BuildAction parameter</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>dbup migrations add-migration sql</tags>
   </metadata>  
+  <files>
+	<file src="tools\*.*" target="tools" />
+  </files>
 </package>
