@@ -30,6 +30,31 @@ When `-BuildAction` parameter is set to _Content_, the command will also set **C
 
 ---
 
+## Optional settings file
+If you don't want to specify the `-BuildAction` or `-Folder` parameter everytime you add a new migration, you can add an optional settings file to your project by executing the following command:
+
+    Add-MigrationSettings
+
+This command will add `dbup-add-migration.json` file to your project (if it doesn't exist yet) with default configuration for the Add-Migration command:
+
+```
+{
+    "folder": "Migrations",
+    "buildAction": "EmbeddedResource"
+}
+```
+
+---
+The "buildAction" field should contain one of the following values:
+
+- None
+- Compile
+- Content
+- EmbeddedResource
+---
+
+However, if you have the settings file in your project and specify the `-BuildAction` or `-Folder` parameters anyway when generating a new migration, they will take precedence over the values in `dbup-add-migration.json`
+
 ## How to install
 You can install this package from [NuGet](https://www.nuget.org/packages/dbup-add-migration/)
     

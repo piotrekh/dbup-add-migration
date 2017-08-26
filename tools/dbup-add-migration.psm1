@@ -14,6 +14,10 @@
     $projectDir = Split-Path $project.FullName
     $scriptsDir = $projectDir    
 
+    #apply folder and build action values from settings file
+    #(only if folder is not specified and build action is 'None')
+    Apply-Settings -folder ([ref]$Folder) -buildAction ([ref]$BuildAction) -projectDir $projectDir
+
     #check if the scripts folder is specified
     if ($Folder -ne "")
     {
@@ -88,6 +92,65 @@
     $dte.ItemOperations.OpenFile($filePath) | Out-Null
 }
 
+function Apply-Settings([ref]$folder, [ref]$buildAction, $projectDir)
+{    
+    $settingsFilePath = Join-Path $projectDir "dbup-add-migration.json"
+
+    #check if settings file exists
+    if (Test-Path $settingsFilePath -PathType Leaf)
+    {
+        $settings = Get-Content -Raw -Path $settingsFilePath | ConvertFrom-Json
+
+        #overwrite $folder value only if it's not already set
+        if($folder.Value -eq "")
+        {
+            $folder.Value = $settings.folder
+        }
+        
+        #overwrite $buildAction value only if it's set to 'None'
+        if($buildAction.Value -eq [BuildActionType]::None)
+        {
+            $buildAction.Value = [BuildActionType] $settings.buildAction
+        }
+    }
+}
+
+function Add-MigrationSettings
+{
+    $project = Get-Project
+    $projectDir = Split-Path $project.FullName
+    $settingsFileName = "dbup-add-migration.json"
+    $settingsFilePath = Join-Path $projectDir $settingsFileName
+
+    #create settings file only if it doesn't exist yet
+    if (Test-Path $settingsFilePath -PathType Leaf)
+    {
+        Write-Host "A settings file for Add-Migration command already exists"
+    }
+    else
+    {
+        #create the file
+        New-Item -Path $projectDir -Name $settingsFileName -ItemType File | Out-Null
+        
+        #prepare default settings
+        $defaultSettings = @"
+{
+	"folder": "Migrations",
+	"buildAction": "EmbeddedResource"
+}
+"@
+
+        #insert default data into the file
+        $defaultSettings | Out-File -FilePath $settingsFilePath
+
+        #add the settings file to the project
+        $item = $project.ProjectItems.AddFromFile($settingsFilePath)
+
+        #open the settings file
+        $dte.ItemOperations.OpenFile($settingsFilePath) | Out-Null
+    }
+}
+
 enum BuildActionType
 {
     None = 0
@@ -96,4 +159,4 @@ enum BuildActionType
     EmbeddedResource = 3
 }
 
-Export-ModuleMember Add-Migration
+Export-ModuleMember -Function Add-Migration, Add-MigrationSettings
