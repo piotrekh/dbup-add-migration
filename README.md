@@ -1,6 +1,10 @@
 # Add-Migration command for DbUp
 **Add-Migration** Package Manager Console command intended for use with [DbUp](http://dbup.github.io/) (but not depending on it)
 
+## Requirements
+
+- Powershell 5
+
 ## About
 This package adds a new command **"Add-Migration"** to the Package Manager Console. Running the command results in an sql file with date and time (in format _yyyyMMddHHmmss_) in the file name added to the project (e.g. `20170730185349_MyFirstMigration.sql`). 
 
