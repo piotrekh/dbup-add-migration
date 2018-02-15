@@ -1,4 +1,4 @@
-﻿function Add-Migration
+﻿function Add-DbUpMigration
 {
     param
     (
@@ -92,6 +92,18 @@
     $dte.ItemOperations.OpenFile($filePath) | Out-Null
 }
 
+function Add-Migration
+{
+    param
+    (
+        [string] $Name,
+        [string] $Folder = "",
+        [BuildActionType] $BuildAction = [BuildActionType]::None
+    )
+
+    Add-DbUpMigration -Name $Name -Folder $Folder -BuildAction $BuildAction
+}
+
 function Apply-Settings([ref]$folder, [ref]$buildAction, $projectDir)
 {    
     $settingsFilePath = Join-Path $projectDir "dbup-add-migration.json"
@@ -159,4 +171,4 @@ enum BuildActionType
     EmbeddedResource = 3
 }
 
-Export-ModuleMember -Function Add-Migration, Add-MigrationSettings
+Export-ModuleMember -Function Add-DbUpMigration, Add-Migration, Add-MigrationSettings

@@ -6,7 +6,7 @@
 - Powershell 5
 
 ## About
-This package adds a new command **"Add-Migration"** to the Package Manager Console. Running the command results in an sql file with date and time (in format _yyyyMMddHHmmss_) in the file name added to the project (e.g. `20170730185349_MyFirstMigration.sql`). 
+This package adds a new command **"Add-Migration"** (and **"Add-DbUpMigration"** alias) to the Package Manager Console. Running the command results in an sql file with date and time (in format _yyyyMMddHHmmss_) in the file name added to the project (e.g. `20170730185349_MyFirstMigration.sql`). 
 
 Create a file using default behaviour (the command will decide where to put it, build action will not be set):
 
@@ -19,6 +19,8 @@ Create a file in specific folder:
 Set build action when creating a file (use tab for -BuildAction value hints):
 
     Add-Migration "MyFirstMigration" -BuildAction EmbeddedResource
+
+**If you experience issues with `Add-Migration` command being overwritten by the EF migrations' command (which has the same name), please use the alias `Add-DbUpMigration` or prefix the command with package name: `dbup-add-migration\Add-Migration`**
 
 ---
 
