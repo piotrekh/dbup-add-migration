@@ -1,3 +1,6 @@
+[![NuGet](https://img.shields.io/nuget/dt/dbup-add-migration.svg)](https://www.nuget.org/packages/dbup-add-migration/)
+[![NuGet](https://img.shields.io/nuget/v/dbup-add-migration.svg)](https://www.nuget.org/packages/dbup-add-migration/)
+
 # Add-Migration command for DbUp
 **Add-Migration** Package Manager Console command intended for use with [DbUp](http://dbup.github.io/) (but not depending on it)
 
