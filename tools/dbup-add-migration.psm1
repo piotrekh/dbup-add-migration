@@ -167,6 +167,86 @@ function Add-MigrationSettings
     }
 }
 
+class Settings
+{
+    [string] $Folder
+    [string] $BuildAction
+    [File] $File
+
+    hidden static [string] $defaultFolder = "Migrations"
+    hidden static [string] $defaultBuildAction = "EmbeddedResource"
+
+    static [string] getDefaultFolder()
+    {
+        return [Settings]::defaultFolder
+    }
+
+    static [string] getDefaultBuildAction()
+    {
+        return [Settings]::defaultBuildAction
+    }
+
+    Settings()
+    {
+        $this.Folder = [Settings]::getDefaultFolder
+        $this.BuildAction = [Settings]::getDefaultBuildAction
+        $this.File = [File]::new()
+    }
+
+    Settings(
+        [string] $Folder,
+        [string] $BuildAction,
+        [File] $File)
+    {
+        $this.Folder = $Folder
+        $this.BuildAction = $BuildAction
+        $this.File = $File
+    }
+}
+
+class File
+{
+    [string] $Name
+    [string] $SegmentSeparator
+    [string] $PrefixFormat
+
+    hidden static [string] $defaultName = "dbup-add-migration.json"
+    hidden static [string] $defaultSegmentSeparator = "_"
+    hidden static [string] $defaultPrefixFormat = "yyyyMMddHHmmss"
+
+    static [string] getDefaultName()
+    {
+        return [File]::defaultName
+    }
+
+    static [string] getDefaultSegmentSeparator()
+    {
+        return [File]::defaultSegmentSeparator
+    }
+
+    static [string] getDefaultPrefixFormat()
+    {
+        return [File]::defaultPrefixFormat
+    }
+
+    File()
+    {
+        $this.Name = [File]::getDefaultName()
+        $this.SegmentSeparator = [File]::getDefaultSegmentSeparator()
+        $this.PrefixFormat = [File]::getDefaultPrefixFormat()
+    }
+
+    File(
+        [string] $Name,
+        [string] $SegmentSeparator,
+        [string] $PrefixFormat)
+    {
+        $this.Name = $Name
+        $this.SegmentSeparator = $SegmentSeparator
+        $this.PrefixFormat = $PrefixFormat
+    }
+}
+
 enum BuildActionType
 {
     None = 0
