@@ -38,8 +38,7 @@
     elseif (Test-Path (Join-Path $scriptsDir $scriptsFolderName) -PathType Container)
     {
         $scriptsDir = Join-Path $scriptsDir $scriptsFolderName
-    }
-    else
+    } else
     {
         #search for .sql files in the project
         $sqlFiles = @(Get-ChildItem -Path $projectDir -Filter *.sql -Recurse)
@@ -65,7 +64,7 @@
     {
         $fileName = $fileName + "_" + $Name
     }    
-    
+
     $fileName = $fileName + ".sql"
     $filePath = Join-Path $scriptsDir $fileName
  
@@ -140,8 +139,7 @@ function Add-MigrationSettings
     if (Test-Path $settingsFilePath -PathType Leaf)
     {
         Write-Host "A settings file for Add-Migration command already exists"
-    }
-    else
+    } else
     {
         #create the file
         New-Item -Path $projectDir -Name $settingsFileName -ItemType File | Out-Null
@@ -150,7 +148,11 @@ function Add-MigrationSettings
         $defaultSettings = @"
 {
 	"folder": "Migrations",
-	"buildAction": "EmbeddedResource"
+    "buildAction": "EmbeddedResource",
+    "fileName": {
+        "segmentSeparator": "_",
+        "prefixFormat": "yyyyMMddHHmmss"
+    }
 }
 "@
 
