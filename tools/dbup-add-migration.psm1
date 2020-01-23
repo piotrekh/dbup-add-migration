@@ -58,7 +58,7 @@
     }
 
     #generate migration file name and path
-    $fileName = Get-Date -Format yyyyMMddHHmmss 
+    $fileName = Get-Date([System.DateTime]::UtcNow) -Format yyyyMMddHHmmss 
     
     if($Name -ne "")
     {
