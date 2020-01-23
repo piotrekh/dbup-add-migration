@@ -60,10 +60,12 @@
 
     #generate migration file name and path
     $fileName = Get-Date -Format yyyyMMddHHmmss 
+    
     if($Name -ne "")
     {
         $fileName = $fileName + "_" + $Name
     }    
+    
     $fileName = $fileName + ".sql"
     $filePath = Join-Path $scriptsDir $fileName
  
