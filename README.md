@@ -9,7 +9,7 @@
 - Powershell 5
 
 ## About
-This package adds a new command **"Add-Migration"** (and **"Add-DbUpMigration"** alias) to the Package Manager Console. Running the command results in an sql file with date and time (in format _yyyyMMddHHmmss_) in the file name added to the project (e.g. `20170730185349_MyFirstMigration.sql`). 
+This package adds a new command **"Add-Migration"** (and **"Add-DbUpMigration"** alias) to the Package Manager Console. Running the command results in generating an empty sql file with the specified name, which is prefixed by a timestamp in UTC (by default, in a format _yyyyMMddHHmmss_). The auto-generated file (e.g. 20170730185349_MyFirstMigration.sql`) will be added to the project, which you can set by selecting respective item from the dropdown list "Default project" on the top of your package manager console window.
 
 Create a file using default behaviour (the command will decide where to put it, build action will not be set):
 
@@ -49,7 +49,11 @@ This command will add `dbup-add-migration.json` file to your project (if it does
 ```
 {
     "folder": "Migrations",
-    "buildAction": "EmbeddedResource"
+    "buildAction": "EmbeddedResource",
+    "file": {
+        "SegmentSeparator":  "_",
+        "PrefixFormat":  "yyyyMMddHHmmss"
+    }
 }
 ```
 
