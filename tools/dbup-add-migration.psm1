@@ -4,7 +4,7 @@
         [string] $Name,
         [string] $Folder = "",
         [BuildActionType] $BuildAction = [BuildActionType]::None,
-        [SqlScriptType] $SqlScriptType = [SqlScriptOptions]::getDefaultSqlScriptType(),
+        [ScriptType] $ScriptType = [SqlScriptOptions]::getDefaultScriptType(),
         [int] $RunGroupOrder = [SqlScriptOptions]::getDefaultRunGroupOrder()
     )
 
@@ -95,11 +95,11 @@ function Add-Migration {
         [string] $Name,
         [string] $Folder = "",
         [BuildActionType] $BuildAction = [BuildActionType]::None,
-        [SqlScriptType] $SqlScriptType = [SqlScriptOptions]::getDefaultSqlScriptType(),
+        [ScriptType] $ScriptType = [SqlScriptOptions]::getDefaultScriptType(),
         [int] $RunGroupOrder = [SqlScriptOptions]::getDefaultRunGroupOrder()
     )
 
-    Add-DbUpMigration -Name $Name -Folder $Folder -BuildAction $BuildAction -SqlScriptType $SqlScriptType -RunGroupOrder $RunGroupOrder
+    Add-DbUpMigration -Name $Name -Folder $Folder -BuildAction $BuildAction -ScriptType $ScriptType -RunGroupOrder $RunGroupOrder
 }
 
 function Apply-Settings([ref]$folder, [ref]$buildAction, [Settings]$settings) {    
@@ -131,11 +131,15 @@ function Add-MigrationSettings {
         #getting default file settings
         $defaultFileSettings = [File]::new() | Select-Object -Property * -ExcludeProperty Name
         
+        #getting default sql script options
+        $defaultSqlScriptOptions = [SqlScriptOptions]::new()
+        
         #composing default settings
         $defaultSettings = [PSCustomObject]@{
-            folder      = [Settings]::getDefaultFolder()
-            buildAction = [Settings]::getDefaultBuildAction()
-            file        = $defaultFileSettings
+            folder           = [Settings]::getDefaultFolder()
+            buildAction      = [Settings]::getDefaultBuildAction()
+            file             = $defaultFileSettings
+            sqlScriptOptions = $defaultSqlScriptOptions
         }
 
         #insert default data into the file
@@ -236,14 +240,14 @@ class File {
 }
 
 class SqlScriptOptions {
-    [SqlScriptType] $SqlScriptType
+    [ScriptType] $ScriptType
     [int] $RunGroupOrder
 
-    hidden static [SqlScriptType] $defaultSqlScriptType = [SqlScriptType]::None
+    hidden static [ScriptType] $defaultScriptType = [ScriptType]::None
     hidden static [int] $defaultRunGroupOrder = 100 # NOTE: this corresponds to the default value in DbUp sourcecode
 
-    static [SqlScriptType] getDefaultSqlScriptType() {
-        return [SqlScriptOptions]::defaultSqlScriptType
+    static [ScriptType] getDefaultScriptType() {
+        return [SqlScriptOptions]::defaultScriptType
     }
 
     static [int] getDefaultRunGroupOrder() {
@@ -251,12 +255,12 @@ class SqlScriptOptions {
     }
 
     SqlScriptOptions() {
-        $this.SqlScriptType = [SqlScriptOptions]::getDefaultSqlScriptType()
+        $this.ScriptType = [SqlScriptOptions]::getDefaultScriptType()
         $this.RunGroupOrder = [SqlScriptOptions]::getDefaultRunGroupOrder()
     }
 
-    SqlScriptOptions([SqlScriptType] $SqlScriptType, [int] $RunGroupOrder) {
-        $this.SqlScriptType = $SqlScriptType
+    SqlScriptOptions([ScriptType] $ScriptType, [int] $RunGroupOrder) {
+        $this.ScriptType = $ScriptType
         $this.RunGroupOrder = $RunGroupOrder
     }
 }
@@ -268,7 +272,7 @@ enum BuildActionType {
     EmbeddedResource = 3
 }
 
-enum SqlScriptType {
+enum ScriptType {
     None = 0
     RunOnce = 1
     RunAlways = 2
