@@ -228,11 +228,43 @@ class File {
     }
 }
 
+class SqlScriptOptions {
+    [SqlScriptExecutionMode] $ExecutionMode
+    [int] $RunGroupOrder
+
+    hidden static [SqlScriptExecutionMode] $defaultExecutionMode = [SqlScriptExecutionMode]::None
+    hidden static [int] $defaultRunGroupOrder = 100 # NOTE: this corresponds to the default value in DbUp sourcecode
+
+    static [SqlScriptExecutionMode] getDefaultExecutionMode() {
+        return [SqlScriptOptions]::defaultExecutionMode
+    }
+
+    static [int] getDefaultRunGroupOrder() {
+        return [SqlScriptOptions]::defaultRunGroupOrder
+    }
+
+    SqlScriptOptions() {
+        $this.ExecutionMode = [SqlScriptOptions]::getDefault()
+        $this.RunGroupOrder = [SqlScriptOptions]::getDefaultRunGroupOrder()
+    }
+
+    SqlScriptOptions([SqlScriptExecutionMode] $ExecutionMode, [int] $RunGroupOrder) {
+        $this.ExecutionMode = $ExecutionMode
+        $this.RunGroupOrder = $RunGroupOrder
+    }
+}
+
 enum BuildActionType {
     None = 0
     Compile = 1
     Content = 2
     EmbeddedResource = 3
+}
+
+enum SqlScriptExecutionMode {
+    None = 0
+    RunOnce = 1
+    RunAlways = 2
 }
 
 Export-ModuleMember -Function Add-DbUpMigration, Add-Migration, Add-MigrationSettings
