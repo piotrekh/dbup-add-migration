@@ -26,7 +26,7 @@
 
     #apply folder and build action values from settings file
     #(only if folder is not specified and build action is 'None')
-    Apply-Settings -folder ([ref]$Folder) -buildAction ([ref]$BuildAction) -settings $settings
+    Apply-Settings -folder ([ref]$Folder) -buildAction ([ref]$BuildAction) -executionMode ([ref]$ExecutionMode) -settings $settings
 
     #check if the scripts folder is specified
     if ($Folder -ne "") {
@@ -62,7 +62,7 @@
     }
 
     #generate migration file name and path
-    $fileName = [File]::buildFullName($Name, $settings.File.PrefixFormat, $settings.File.SegmentSeparator)
+    $fileName = [File]::buildFullName($Name, $settings.File.PrefixFormat, $settings.File.SegmentSeparator, $ExecutionMode)
     $filePath = Join-Path $scriptsDir $fileName
  
     #create migration file
@@ -100,7 +100,7 @@ function Add-Migration {
     Add-DbUpMigration -Name $Name -Folder $Folder -BuildAction $BuildAction -ExecutionMode $ExecutionMode
 }
 
-function Apply-Settings([ref]$folder, [ref]$buildAction, [Settings]$settings) {    
+function Apply-Settings([ref]$folder, [ref]$buildAction, [ref]$executionMode, [Settings]$settings) {    
     #overwrite $folder value only if it's not already set
     if ($folder.Value -eq "") {
         $folder.Value = $settings.Folder
@@ -109,6 +109,11 @@ function Apply-Settings([ref]$folder, [ref]$buildAction, [Settings]$settings) {
     #overwrite $buildAction value only if it's set to 'None'
     if ($buildAction.Value -eq [BuildActionType]::None) {
         $buildAction.Value = [BuildActionType] $settings.BuildAction
+    }
+        
+    #overwrite $executionMode value only if it's set to 'None'
+    if ($executionMode.Value -eq [ExecutionMode]::None) {
+        $executionMode.Value = [ExecutionMode] $settings.ExecutionMode
     }
 }
 
@@ -216,12 +221,16 @@ class File {
         return [File]::defaultPrefixFormat
     }
 
-    static [string] buildFullName([string]$MainSegment, [string]$Format, [string]$Separator) {
+    static [string] buildFullName([string]$MainSegment, [string]$Format, [string]$Separator, [ExecutionMode]$ExecutionMode) {
         $fullName = Get-Date([System.DateTime]::UtcNow) -Format $Format
+        
+        if ($ExecutionMode -ne [ExecutionMode]::None) {
+            $fullName += $Separator + $ExecutionMode.ToString()
+        }
     
         if ($MainSegment -ne "") {
             $fullName += $Separator + $MainSegment
-        }    
+        }
     
         return $fullName + ".sql"
     }
