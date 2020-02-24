@@ -9,9 +9,9 @@
 - Powershell 5
 
 ## About
-This package adds a new command **"Add-Migration"** (and **"Add-DbUpMigration"** alias) to the Package Manager Console. Running the command results in an sql file with date and time (in format _yyyyMMddHHmmss_) in the file name added to the project (e.g. `20170730185349_MyFirstMigration.sql`). 
+This package adds a new command **"Add-Migration"** (and **"Add-DbUpMigration"** alias) to the Package Manager Console. Running the command results in generating an empty sql file with the specified name, which is prefixed by a timestamp in UTC (by default, in a format `_yyyyMMddHHmmss_`). The auto-generated file (e.g. `20170730185349_MyFirstMigration.sql`) will be added to the project, which you can set by selecting respective item from the dropdown list "Default project" on the top of your package manager console window.
 
-Create a file using default behaviour (the command will decide where to put it, build action will not be set):
+Create a file using default behavior (the command will decide where to put it, build action will not be set):
 
     Add-Migration "MyFirstMigration"
 
@@ -22,6 +22,10 @@ Create a file in specific folder:
 Set build action when creating a file (use tab for -BuildAction value hints):
 
     Add-Migration "MyFirstMigration" -BuildAction EmbeddedResource
+
+Include script execution mode into the file name to support building of `ScriptOptions` and improve integration of script types available for DbUp 4.2 and higher:
+
+    Add-Migration "MyFirstMigration" -ExecutionMode RunAlways
 
 **If you experience issues with `Add-Migration` command being overwritten by the EF migrations' command (which has the same name), please use the alias `Add-DbUpMigration` or prefix the command with package name: `dbup-add-migration\Add-Migration`**
 
@@ -39,8 +43,12 @@ When `-BuildAction` parameter is set to _Content_, the command will also set **C
 
 ---
 
+When `-ExecutionMode` parameter is not set or equal to `None`, it is ignored and will not be included into the file name
+
+---
+
 ## Optional settings file
-If you don't want to specify the `-BuildAction` or `-Folder` parameter everytime you add a new migration, you can add an optional settings file to your project by executing the following command:
+If you don't want to specify the `-BuildAction`, `-Folder` or `-ExecutionMode` parameter every time you add a new migration, you can add an optional settings file to your project by executing the following command:
 
     Add-MigrationSettings
 
@@ -49,9 +57,15 @@ This command will add `dbup-add-migration.json` file to your project (if it does
 ```
 {
     "folder": "Migrations",
-    "buildAction": "EmbeddedResource"
+    "buildAction": "EmbeddedResource",
+    "file": {
+        "SegmentSeparator":  "_",
+        "PrefixFormat":  "yyyyMMddHHmmss"
+    }
 }
 ```
+
+Please, note, that `executionMode` is optional and can be added if required (e.g. `"executionMode": "RunOnce"`)
 
 ---
 The "buildAction" field should contain one of the following values:
@@ -62,7 +76,14 @@ The "buildAction" field should contain one of the following values:
 - EmbeddedResource
 ---
 
-However, if you have the settings file in your project and specify the `-BuildAction` or `-Folder` parameters anyway when generating a new migration, they will take precedence over the values in `dbup-add-migration.json`
+The "executionMode" field should contain one of the following values:
+
+- RunOnce
+- RunAlways
+- RunOnChange
+---
+
+However, if you have the settings file in your project and specify the `-BuildAction`, `-Folder` or `-ExecutionMode` parameters anyway when generating a new migration, they will take precedence over the values in `dbup-add-migration.json`
 
 ## How to install
 You can install this package from [NuGet](https://www.nuget.org/packages/dbup-add-migration/)
