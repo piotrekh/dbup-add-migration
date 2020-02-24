@@ -133,23 +133,50 @@ function Add-MigrationSettings {
         
         #getting default file settings
         $defaultFileSettings = [File]::new() | Select-Object -Property * -ExcludeProperty Name
+
+        if ([Settings]::getDefaultExecutionMode() -ne [ExecutionMode]::None) {
+            $defaultExecutionMode = [Settings]::getDefaultExecutionMode().ToString()
+        }
+        else {
+            $defaultExecutionMode = $null
+        }
         
         #composing default settings
         $defaultSettings = [PSCustomObject]@{
             folder        = [Settings]::getDefaultFolder()
             buildAction   = [Settings]::getDefaultBuildAction()
+            executionMode = $defaultExecutionMode
             file          = $defaultFileSettings
-            executionMode = [Settings]::getDefaultExecutionMode()
         }
 
-        #insert default data into the file
-        $defaultSettings | ConvertTo-Json -Depth 10 | Out-File -FilePath $settingsFilePath
+        #converting default settings into json-file
+        $defaultSettings | Remove-NullOrEmpty | ConvertTo-Json -Depth 10 | Out-File -FilePath $settingsFilePath
 
-        #add the settings file to the project
+        #add settings file to the project
         $item = $project.ProjectItems.AddFromFile($settingsFilePath)
 
-        #open the settings file
+        #open settings file
         $dte.ItemOperations.OpenFile($settingsFilePath) | Out-Null
+    }
+}
+
+function Remove-NullOrEmpty {
+    [cmdletbinding()]
+    param(
+        #object to remove null values from
+        [parameter(ValueFromPipeline, Mandatory)]
+        [object[]]$InputObject,
+        #by default, remove empty strings (""); specify -LeaveEmptyStrings to leave them
+        [switch]$LeaveEmptyStrings
+    )
+    process {
+        foreach ($obj in $InputObject) {
+            $AllProperties = $obj.psobject.properties.Name
+            $NonNulls = $AllProperties |
+            where-object { $null -ne $obj.$PSItem } |
+            where-object { $LeaveEmptyStrings.IsPresent -or -not [string]::IsNullOrEmpty($obj.$PSItem) }
+            $obj | Select-Object -Property $NonNulls
+        }
     }
 }
 
@@ -259,6 +286,7 @@ enum ExecutionMode {
     None = 0
     RunOnce = 1
     RunAlways = 2
+    RunOnChange = 3
 }
 
 Export-ModuleMember -Function Add-DbUpMigration, Add-Migration, Add-MigrationSettings
