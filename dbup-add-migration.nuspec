@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/piotrekh/dbup-add-migration</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DbUp/DbUp/master/dbup-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package manager console command "Add-Migration" that creates an sql file with date and time in UTC (yyyyMMddHHmmss) in the file name (e.g. 20170730185349_Migration.sql)</description>
+    <description>Package manager console command "Add-Migration" creates an empty sql file with date and time in UTC as a configurable prefix (default format: yyyyMMddHHmmss) in the file name (e.g. 20170730185349_Migration.sql)</description>
     <releaseNotes>v1.3.0 - added Add-DbUpMigration alias command</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>dbup migrations add-migration sql</tags>
