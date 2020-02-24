@@ -58,7 +58,6 @@ This command will add `dbup-add-migration.json` file to your project (if it does
 {
     "folder": "Migrations",
     "buildAction": "EmbeddedResource",
-    "executionMode": "RunOnce",
     "file": {
         "SegmentSeparator":  "_",
         "PrefixFormat":  "yyyyMMddHHmmss"
@@ -66,7 +65,7 @@ This command will add `dbup-add-migration.json` file to your project (if it does
 }
 ```
 
-Please, note, that `executionMode` is optional and can be omitted
+Please, note, that `executionMode` is optional and can be added if required (e.g. `"executionMode": "RunOnce"`)
 
 ---
 The "buildAction" field should contain one of the following values:
@@ -79,7 +78,6 @@ The "buildAction" field should contain one of the following values:
 
 The "executionMode" field should contain one of the following values:
 
-- None
 - RunOnce
 - RunAlways
 - RunOnChange
